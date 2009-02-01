@@ -1,7 +1,4 @@
-Baby Pow
---------
+Particle System Testbed
+-----------------------
 
-Let your babies pound on the keyboard and have fun!  Pressing a key gives a
-positive Y acceleration to the corresponding letter/number/symbol, and the
-symbol flies up through the screen!  Symbols are bound left and right by the
-screen's edge, rebounding on them.
+Want to see how the particle system works in love?  Well, you're in luck, here's how you do it!
