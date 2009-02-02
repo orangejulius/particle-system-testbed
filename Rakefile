@@ -1,4 +1,4 @@
-FILES = FileList["*.lua", "*.conf", "readme.txt", "**/*.jpg"]
+FILES = FileList["*.lua", "*.conf", "readme.txt", "**/*.jpg", "*.png"]
 
 task :zip => FILES do
   sh "zip $TMP/particle-system-testbed.love #{FILES.join(' ')}"
