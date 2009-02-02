@@ -52,6 +52,14 @@ function load()
   -- The size of the particles.  0.5 draws the images at half-size.
   system:setSize(0.50)
 
+  -- Sets the tangential acceleration (acceleration perpendicular to the particle's direction).
+  ta = 0 
+  system:setTangentialAcceleration(ta)
+ 
+  -- Sets the radial acceleration (acceleration towards the emitter). 
+  ra = 0
+  system:setRadialAcceleration(ra)
+
   -- We have to start the particle system!
   system:start()
 end
@@ -84,7 +92,28 @@ function update(dt)
   if love.keyboard.isDown(love.key_l) then
     dx = dx + 1
   end
+ 
 
+  -- Change radial / tangial accel. 
+  if love.keyboard.isDown(love.key_m) then
+    ta = ta + 1
+  end
+  if love.keyboard.isDown(love.key_n) then
+    ta = ta - 1
+  end
+
+  if love.keyboard.isDown(love.key_b) then
+    ra = ra + 1
+  end
+  if love.keyboard.isDown(love.key_v) then
+    ra = ra - 1
+  end
+ 
+
+
+ 
+  system:setRadialAcceleration(ra)
+  system:setTangentialAcceleration(ta)
   system:setPosition(ex, ey)
   system:setSpread(spread)
   system:setSpeed(speed)
@@ -92,8 +121,8 @@ function update(dt)
 end
 
 function draw()
-  love.graphics.drawf("Speed: " .. speed .. "\nSpread: " .. spread .. "\nTime: " .. love.timer.getTime() .. "\nEmitter Position: (" .. ex .. ", " .. ey .. ")" .. "\nDrawing Position: (" .. dx .. ", " .. dy .. ")", 10, 10, 300)
-  love.graphics.drawf("Left/Right: change emitter's spread\nUp/Down: change emitter's speed\nW, A, S, D: Move emitter in space\nI, J, K, L: Move emitter's drawing position\nSpace: Start/stop emitter\nR: Restart game\nESC: Quit", 10, 480, 300)
+  love.graphics.drawf("Speed: " .. speed .. "\nSpread: " .. spread .. "\nTangential acceleration: " .. ta .."\nRadial acceleration: " .. ra .."\nTime: " .. love.timer.getTime() .. "\nEmitter Position: (" .. ex .. ", " .. ey .. ")" .. "\nDrawing Position: (" .. dx .. ", " .. dy .. ")", 10, 10, 300)
+  love.graphics.drawf("Left/Right: change emitter's spread\nUp/Down: change emitter's speed\nV/B, N/M: radical, tangential accelerationi\nW, A, S, D: Move emitter in space\nI, J, K, L: Move emitter's drawing position\nSpace: Start/stop emitter\nR: Restart game\nESC: Quit", 10, 480, 300)
 
   -- Drawing the particle system last, so it appears above the text
   love.graphics.draw(system, dx, dy)
