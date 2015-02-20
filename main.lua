@@ -2,27 +2,32 @@
 --
 -- Particle systems emit "particles", which are drawn using images.  You must
 -- first load an image, then this is draw on screen.
-function load()
+function love.load()
   font = love.graphics.newFont(love.default_font, 12)
   love.graphics.setFont(font)
   
-  potato = love.graphics.newImage("potato.png")
+  potato = love.graphics.newImage("pixel.png")
 
   -- Instantiates the particle system.  Requires the image to be emitted, as
   -- well as the maximum number of particles this emitter will track.
-  system = love.graphics.newParticleSystem(potato, 200)
+  system = love.graphics.newParticleSystem(potato)
+  system:setColors(0, 0, 200, 50,
+    200, 0, 0, 50, 
+    255, 255, 0, 50,
+    0,0,0, 50)
 
+system:setBufferSize(20000)
   -- How many particles to emit per second
-  system:setEmissionRate(20)
+  system:setEmissionRate(4000)
 
   -- For how long will the particle emitter emit particles?
   -- Specified in seconds, -1 is infinitely.
-  system:setLifetime(-1)
+  system:setEmitterLifetime(-1)
 
   -- For each particle, how long will it live?
   -- Alternative is to use (min, max), such that particles will die between the 2 numbers
   -- Unit is seconds.
-  system:setParticleLife(5)
+  system:setParticleLifetime(1.2)
 
   -- Position of the emitter in relation to the drawing position.
   -- Moving the emitter's position does not vary the position of the living particles,
@@ -32,25 +37,28 @@ function load()
   system:setPosition(ex, ey)
 
   -- These are the drawing coordinates
-  dx, dy = 400, 300
+  dx, dy = love.graphics.getWidth()/2, love.graphics.getHeight() * 0.9
 
-  -- In which direction should particles be emitted?  0 is east, -90 is north, 90 is south, and -180, 180 is west
-  system:setDirection(-90)
+  -- In which direction should particles be emitted?  
+  --0 is east, -90 is north, 90 is south, and -180, 180 is west
+  system:setDirection(-1.6)
 
   -- Amount of variation of direction.  Direction will vary by +/- spread randomly.
   -- Unit is degrees, and should be from 0 to 360.
-  spread = 30
+  spread = 3.14
   system:setSpread(spread)
 
+  system:setAreaSpread(normal, 5, 5)
+
   -- Speed of the particles at emission time
-  speed = 50
+  speed = 80
   system:setSpeed(speed)
 
   -- How much gravity to apply
-  system:setGravity(20)
+  system:setLinearAcceleration(0, -997)
 
   -- The size of the particles.  0.5 draws the images at half-size.
-  system:setSize(0.50)
+  system:setSizes(20, 20)
 
   -- Sets the tangential acceleration (acceleration perpendicular to the particle's direction).
   ta = 0 
@@ -64,53 +72,50 @@ function load()
   system:start()
 end
 
-function update(dt)
+function love.update(dt)
   -- Move the emitter's position
-  if love.keyboard.isDown(love.key_w) then
+  if love.keyboard.isDown('w') then
     ey = ey - 1
   end
-  if love.keyboard.isDown(love.key_a) then
+  if love.keyboard.isDown('a') then
     ex = ex - 1
   end
-  if love.keyboard.isDown(love.key_s) then
+  if love.keyboard.isDown('s') then
     ey = ey + 1
   end
-  if love.keyboard.isDown(love.key_d) then
+  if love.keyboard.isDown('d') then
     ex = ex + 1
   end
 
   -- Move the drawing position
-  if love.keyboard.isDown(love.key_i) then
+  if love.keyboard.isDown('i') then
     dy = dy - 1
   end
-  if love.keyboard.isDown(love.key_j) then
+  if love.keyboard.isDown('j') then
     dx = dx - 1
   end
-  if love.keyboard.isDown(love.key_k) then
+  if love.keyboard.isDown('k') then
     dy = dy + 1
   end
-  if love.keyboard.isDown(love.key_l) then
+  if love.keyboard.isDown('l') then
     dx = dx + 1
   end
  
 
   -- Change radial / tangial accel. 
-  if love.keyboard.isDown(love.key_m) then
+  if love.keyboard.isDown('m') then
     ta = ta + 1
   end
-  if love.keyboard.isDown(love.key_n) then
+  if love.keyboard.isDown('n') then
     ta = ta - 1
   end
 
-  if love.keyboard.isDown(love.key_b) then
+  if love.keyboard.isDown('b') then
     ra = ra + 1
   end
-  if love.keyboard.isDown(love.key_v) then
+  if love.keyboard.isDown('v') then
     ra = ra - 1
   end
- 
-
-
  
   system:setRadialAcceleration(ra)
   system:setTangentialAcceleration(ta)
@@ -120,9 +125,9 @@ function update(dt)
   system:update(dt)
 end
 
-function draw()
-  love.graphics.drawf("Speed: " .. speed .. "\nSpread: " .. spread .. "\nTangential acceleration: " .. ta .."\nRadial acceleration: " .. ra .."\nTime: " .. love.timer.getTime() .. "\nEmitter Position: (" .. ex .. ", " .. ey .. ")" .. "\nDrawing Position: (" .. dx .. ", " .. dy .. ")", 10, 10, 300)
-  love.graphics.drawf("Left/Right: change emitter's spread\nUp/Down: change emitter's speed\nV/B, N/M: radical, tangential accelerationi\nW, A, S, D: Move emitter in space\nI, J, K, L: Move emitter's drawing position\nSpace: Start/stop emitter\nR: Restart game\nESC: Quit", 10, 480, 300)
+function love.draw()
+  love.graphics.printf("Speed: " .. speed .. "\nSpread: " .. spread .. "\nTangential acceleration: " .. ta .."\nRadial acceleration: " .. ra .."\nTime: " .. love.timer.getTime() .. "\nEmitter Position: (" .. ex .. ", " .. ey .. ")" .. "\nDrawing Position: (" .. dx .. ", " .. dy .. ")", 10, 10, 300)
+  love.graphics.printf("Left/Right: change emitter's spread\nUp/Down: change emitter's speed\nV/B, N/M: radical, tangential accelerationi\nW, A, S, D: Move emitter in space\nI, J, K, L: Move emitter's drawing position\nSpace: Start/stop emitter\nR: Restart game\nESC: Quit", 10, 480, 300)
 
   -- Drawing the particle system last, so it appears above the text
   love.graphics.draw(system, dx, dy)
